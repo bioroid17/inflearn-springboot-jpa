@@ -4,8 +4,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
-
-import java.util.List;
+import springboot.jpa.domain.Member;
+import springboot.jpa.domain.Order;
 
 public class JpaMain {
     public static void main(String[] args) {
@@ -16,15 +16,12 @@ public class JpaMain {
         tx.begin();
 
         try {
-//            Member findMember = em.find(Member.class, 1L);
-            List<Member> result = em.createQuery("select m from Member as m", Member.class)
-                    .setFirstResult(5)
-                    .setMaxResults(8)
-                    .getResultList();
+            Order order = em.find(Order.class, 1L);
+            Long memberId = order.getMemberId();
 
-            for (Member member : result) {
-                System.out.println("member = " + member.getName());
-            }
+            Member member = em.find(Member.class, memberId);
+
+            Member findMember = order.getMember();
 
             tx.commit();
         } catch (Exception e) {
