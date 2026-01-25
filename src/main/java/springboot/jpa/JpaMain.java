@@ -16,27 +16,16 @@ public class JpaMain {
         tx.begin();
 
         try {
-            // 저장
-            Team team = new Team();
-            team.setName("TeamA");
-            em.persist(team);
-
             Member member = new Member();
             member.setUsername("member1");
-//            member.changeTeam(team);
+
             em.persist(member);
 
-            team.addMember(member);
+            Team team = new Team();
+            team.setName("teamA");
+            team.getMembers().add(member);
 
-            em.flush();
-            em.clear();
-
-            Team findTeam = em.find(Team.class, team.getId());
-            List<Member> members = findTeam.getMembers();
-
-            System.out.println("=====================");
-            System.out.println(findTeam);   // 스택 오버플로우
-            System.out.println("=====================");
+            em.persist(team);
 
             tx.commit();
         } catch (Exception e) {
