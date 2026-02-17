@@ -1,7 +1,8 @@
 package springboot.jpa;
 
 import jakarta.persistence.*;
-import org.hibernate.Hibernate;
+
+import java.util.List;
 
 public class JpaMain {
     public static void main(String[] args) {
@@ -12,18 +13,31 @@ public class JpaMain {
         tx.begin();
 
         try {
+            Team team = new Team();
+            team.setName("teamA");
+            em.persist(team);
+
+            Team team2 = new Team();
+            team2.setName("teamB");
+            em.persist(team2);
+
             Member member1 = new Member();
             member1.setUsername("hello");
+            member1.setTeam(team);
             em.persist(member1);
+
+            Member member2 = new Member();
+            member2.setUsername("hello2");
+            member2.setTeam(team2);
+            em.persist(member2);
 
             em.flush();
             em.clear();
 
-            Member refMember = em.getReference(Member.class, member1.getId());
-            System.out.println("refMember = " + refMember.getClass());
+//            Member m = em.find(Member.class, member2.getId());
 
-//            System.out.println("isLoaded = " + emf.getPersistenceUnitUtil().isLoaded(refMember));
-            Hibernate.initialize(refMember);
+            List<Member> members = em.createQuery("select m from Member m", Member.class)
+                    .getResultList();
 
             tx.commit();
         } catch (Exception e) {
