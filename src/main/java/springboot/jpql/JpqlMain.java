@@ -1,14 +1,10 @@
-package springboot.jpa;
+package springboot.jpql;
 
 import jakarta.persistence.*;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Root;
 
 import java.util.List;
-import java.util.Set;
 
-public class JpaMain {
+public class JpqlMain {
     public static void main(String[] args) {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("jpa");
         EntityManager em = emf.createEntityManager();
@@ -19,15 +15,13 @@ public class JpaMain {
         try {
             Member member = new Member();
             member.setUsername("member1");
+            member.setAge(10);
             em.persist(member);
 
-            // flush -> commit, query
-
-            List<Member> resultList = em.createNativeQuery("select MEMBER_ID, city, street, zipcode, USERNAME from MEMBER", Member.class).getResultList();
-
-            for (Member member1 : resultList) {
-                System.out.println("member1: " + member1);
-            }
+            Member result = em.createQuery("select m from Member m where m.username = :username", Member.class)
+                    .setParameter("username", "member1")
+                    .getSingleResult();
+            System.out.println("singleResult = " + result.getUsername());
 
             tx.commit();
         } catch (Exception e) {
