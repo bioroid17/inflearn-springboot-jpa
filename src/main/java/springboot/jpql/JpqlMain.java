@@ -23,29 +23,33 @@ public class JpqlMain {
 
             Member member1 = new Member();
             member1.setUsername("회원1");
+            member1.setAge(0);
             member1.setTeam(teamA);
             em.persist(member1);
 
             Member member2 = new Member();
             member2.setUsername("회원2");
+            member2.setAge(0);
             member2.setTeam(teamA);
             em.persist(member2);
 
             Member member3 = new Member();
             member3.setUsername("회원3");
+            member3.setAge(0);
             member3.setTeam(teamB);
             em.persist(member3);
 
-            em.flush();
+            int resultCount = em.createQuery("update Member m set m.age = 20")
+                    .executeUpdate();
             em.clear();
+            System.out.println("resultCount: " + resultCount);
 
-            List<Member> resultList = em.createNamedQuery("Member.findByUsername", Member.class)
-                    .setParameter("username", member1.getUsername())
-                    .getResultList();
-
-            for (Member member : resultList) {
-                System.out.println("member = " + member);
-            }
+            Member findMember1 = em.find(Member.class, member1.getId());
+            Member findMember2 = em.find(Member.class, member2.getId());
+            Member findMember3 = em.find(Member.class, member3.getId());
+            System.out.println("findMember1.getAge(): " + findMember1.getAge());
+            System.out.println("findMember2.getAge(): " + findMember2.getAge());
+            System.out.println("findMember3.getAge(): " + findMember3.getAge());
 
             tx.commit();
         } catch (Exception e) {
