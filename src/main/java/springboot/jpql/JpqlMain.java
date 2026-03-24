@@ -39,13 +39,12 @@ public class JpqlMain {
             em.flush();
             em.clear();
 
-            String query = "select m from Member m where m.team = :team";
-            List<Member> members = em.createQuery(query, Member.class)
-                    .setParameter("team", teamA)
+            List<Member> resultList = em.createNamedQuery("Member.findByUsername", Member.class)
+                    .setParameter("username", member1.getUsername())
                     .getResultList();
 
-            for(Member member : members) {
-                System.out.println("member : " + member);
+            for (Member member : resultList) {
+                System.out.println("member = " + member);
             }
 
             tx.commit();
